@@ -1,0 +1,48 @@
+.ag-theme-alpine{
+  font-family: var(--vscode-editor-font-family);
+  color: var(--vscode-editor-foreground);
+  height: 30rem;
+  overflow: auto;
+}
+
+.ag-root-wrapper-body.ag-layout-normal {
+  min-height: 30rem;
+}
+
+
+.grid_controls{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-bottom: .2rem;
+}
+
+.searchinput{
+  min-width: 10rem;
+  border-width: var(--theme-input-border-width);
+  border-color: var(--theme-input-border-color);
+  background-color: var(--theme-input-background);
+  color: var(--theme-input-foreground);
+  height: 1.5rem;
+}
+
+.searchinput:focus{
+  outline-color: var(--theme-input-focus-border-color);
+}
+
+:root{
+--ag-foreground-color: var(--vscode-tab-activeForeground);
+--ag-background-color: var(--vscode-tab-activeBackground);
+
+--ag-header-background-color: var(--vscode-tab-inactiveBackground);
+--ag-header-foreground-color: var(--vscode-tab-inactiveForeground);
+--ag-header-column-resize-handle-color: var(--vscode-tab-border);
+
+
+--ag-row-background-color : var(--vscode-tab-activeBackground);
+--ag-data-color : var(--vscode-tab-activeForeground);
+--ag-odd-row-background-color: var(--vscode-tab-inactiveBackground);
+--ag-odd-row-foreground-color: var(--vscode-tab-inactiveForeground);
+--ag-selected-row-background-color: var(--vscode-tab-activeModifiedBorder);
+--ag-row-border-color: var(---vscode-tab-border);
+}

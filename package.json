@@ -1,0 +1,126 @@
+{
+  "name": "httpbook-grid",
+  "displayName": "httpBook - Grid Renderer",
+  "description": "httpbook extension to view data in grid",
+  "version": "0.1.0",
+  "publisher": "anweber",
+  "homepage": "https://github.com/AnWeber/httpbook-grid",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AnWeber/httpbook-grid"
+  },
+  "bugs": {
+    "url": "https://github.com/AnWeber/httpbook-grid/issues"
+  },
+  "qna": "https://github.com/AnWeber/httpbook-grid/discussions",
+  "engines": {
+    "vscode": "^1.56.0"
+  },
+  "categories": [
+    "Notebooks"
+  ],
+  "keywords": [
+    "httpbook",
+    "rest client",
+    "http"
+  ],
+  "icon": "icon.png",
+  "preview": true,
+  "enableProposedApi": true,
+  "activationEvents": [
+    "onNotebook:http",
+    "onLanguage:http"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "notebookOutputRenderer": [
+      {
+        "id": "httpbook-grid",
+        "entrypoint": "./dist/client.js",
+        "displayName": "httpbook-grid",
+        "mimeTypes": [
+          "x-application/httpbook-grid"
+        ]
+      }
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "httpbook-grid",
+      "properties": {
+        "httpbook-grid.numberOfRowsForColDefRecognition": {
+          "type": "number",
+          "default": 10,
+          "scope": "window",
+          "description": "number of rows for automatic coldef recognition"
+        },
+        "httpbook-grid.searchBodyForArray": {
+          "type": "boolean",
+          "default": true,
+          "scope": "window",
+          "description": "search for array in response"
+        },
+        "httpbook-grid.gridOptions": {
+          "type": "object",
+          "default": {
+            "enableBrowserTooltips" : true,
+            "enableCellTextSelection": true,
+            "defaultColDef": {
+              "resizable": true,
+              "filter": true,
+              "sortable": true
+            }
+          },
+          "scope": "window",
+          "description": "default ag-grid gridOptions"
+        }
+      }
+    }
+  },
+  "extensionDependencies": [
+    "anweber.httpbook"
+  ],
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "webpack --mode production --config ./webpack.config.js",
+    "watch": "webpack --mode development --watch --config ./webpack.config.js",
+    "lockfile-lint": "lockfile-lint --path package-lock.json --validate-https --allowed-hosts npm --validate-checksum --validate-integrity",
+    "eslint": "eslint src --ext ts",
+    "lint": "npm run eslint && npm run lockfile-lint",
+    "precommit": "npm run lint",
+    "update-api": "npx vscode-dts dev"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.168",
+    "@types/node": "^15.0.2",
+    "@types/react": "^17.0.5",
+    "@types/vscode": "^1.56.0",
+    "@types/vscode-notebook-renderer": "^1.57.0",
+    "@types/webpack-env": "^1.16.0",
+    "@typescript-eslint/eslint-plugin": "^4.23.0",
+    "@typescript-eslint/parser": "^4.23.0",
+    "css-loader": "^5.2.4",
+    "eslint": "^7.26.0",
+    "eslint-plugin-node": "^11.1.0",
+    "fork-ts-checker-webpack-plugin": "^6.2.6",
+    "httpyac": "^2.7.0",
+    "husky": "^6.0.0",
+    "lint-staged": "^11.0.0",
+    "lockfile-lint": "^4.6.2",
+    "style-loader": "^2.0.0",
+    "svg-sprite-loader": "^6.0.6",
+    "thread-loader": "^3.0.4",
+    "ts-loader": "^9.1.2",
+    "typescript": "^4.2.4",
+    "url-loader": "^4.1.1",
+    "vscode-dts": "^0.3.1",
+    "webpack": "^5.37.0",
+    "webpack-cli": "^4.7.0"
+  },
+  "dependencies": {
+    "@ag-grid-community/client-side-row-model": "^25.2.0",
+    "@ag-grid-community/core": "^25.2.0",
+    "lodash": "^4.17.21",
+    "preact": "^10.5.13",
+    "vscode-notebook-error-overlay": "^1.0.1"
+  }
+}
