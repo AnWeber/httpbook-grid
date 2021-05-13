@@ -62,7 +62,7 @@
         "httpbook-grid.gridOptions": {
           "type": "object",
           "default": {
-            "enableBrowserTooltips" : true,
+            "enableBrowserTooltips": true,
             "enableCellTextSelection": true,
             "defaultColDef": {
               "resizable": true,
