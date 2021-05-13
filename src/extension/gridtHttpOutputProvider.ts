@@ -3,27 +3,27 @@ import * as Httpyac from 'httpyac';
 import * as vscode from 'vscode';
 import { AppConfig } from './config';
 import get from 'lodash/get';
-import { HttpOutputProvider, HttpOutputResult, HttpOutputPriority } from './httpBookExtensionApi';
+import { HttpOutputProvider, HttpOutputResult, HttpOutputPriority, HttpOutputContext } from './httpBookExtensionApi';
 
 export class GridHttpOutpoutProvider implements HttpOutputProvider {
   id = 'httpbook-grid';
 
   constructor(readonly config: AppConfig) {}
 
-  getOutputResult(httpRegion: Httpyac.HttpRegion): HttpOutputResult | false {
-    if (httpRegion.response?.parsedBody) {
+  getResponseOutputResult(response: Httpyac.HttpResponse, { metaData }: HttpOutputContext): HttpOutputResult | false {
+    if (response?.parsedBody) {
 
       let rowData: Array<unknown> | false = false;
       let priority = HttpOutputPriority.Default;
-      const explicitField = httpRegion.metaData['grid.arrayField'];
+      const explicitField = metaData['grid.arrayField'];
       if (explicitField) {
-        const fieldValue = get(httpRegion.response.parsedBody, explicitField);
+        const fieldValue = get(response.parsedBody, explicitField);
         if (Array.isArray(fieldValue)) {
           rowData = fieldValue;
           priority = HttpOutputPriority.High;
         }
       } else {
-        rowData = this.findArray(httpRegion.response.parsedBody);
+        rowData = this.findArray(response.parsedBody);
       }
       if (rowData) {
         const gridOptions: GridOptions = Object.assign({}, this.config.gridOptions, {
@@ -34,8 +34,8 @@ export class GridHttpOutpoutProvider implements HttpOutputProvider {
             'x-application/httpbook-grid',
             gridOptions,
             {
-              numberOfRowsForColDefRecognition: +httpRegion.metaData['grid.rowsForColumnDefs'] || this.config.numberOfRowsForColDefRecognition,
-              columnDefs: httpRegion.metaData['grid.columnDefs'],
+              numberOfRowsForColDefRecognition: +metaData['grid.rowsForColumnDefs'] || this.config.numberOfRowsForColDefRecognition,
+              columnDefs: metaData['grid.columnDefs'],
             }
           ),
           priority
