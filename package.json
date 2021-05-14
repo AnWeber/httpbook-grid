@@ -2,7 +2,7 @@
   "name": "httpbook-grid",
   "displayName": "httpBook - Grid Renderer",
   "description": "httpbook extension to view data in grid",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "publisher": "anweber",
   "homepage": "https://github.com/AnWeber/httpbook-grid",
   "repository": {
@@ -104,7 +104,7 @@
     "css-loader": "^5.2.4",
     "eslint": "^7.26.0",
     "eslint-plugin-node": "^11.1.0",
-    "fork-ts-checker-webpack-plugin": "^6.2.7",
+    "fork-ts-checker-webpack-plugin": "^6.2.9",
     "httpyac": "^2.8.0",
     "husky": "^6.0.0",
     "lint-staged": "^11.0.0",
