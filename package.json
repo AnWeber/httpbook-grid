@@ -32,9 +32,9 @@
     "onLanguage:http"
   ],
   "main": "./dist/extension.js",
-	"capabilities": {
-		"virtualWorkspaces": true
-	},
+  "capabilities": {
+    "virtualWorkspaces": true
+  },
   "contributes": {
     "notebookOutputRenderer": [
       {
