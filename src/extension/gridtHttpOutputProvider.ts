@@ -23,6 +23,9 @@ export class GridHttpOutpoutProvider implements HttpOutputProvider {
           priority = HttpOutputPriority.High;
         }
       } else {
+        if (Array.isArray(response.parsedBody)) {
+          priority = HttpOutputPriority.High;
+        }
         rowData = this.findArray(response.parsedBody);
       }
       if (rowData) {
@@ -46,14 +49,16 @@ export class GridHttpOutpoutProvider implements HttpOutputProvider {
   }
 
   private findArray(data: unknown): Array<unknown> | false {
-    if (Array.isArray(data)) {
-      return data;
-    }
-    if (typeof data === 'object') {
-      for (const [, value] of Object.entries(data as Record<string, string>)) {
-        const result = this.findArray(value);
-        if (result) {
-          return result;
+    if (data) {
+      if (Array.isArray(data)) {
+        return data;
+      }
+      if (typeof data === 'object') {
+        for (const [, value] of Object.entries(data as Record<string, string>)) {
+          const result = this.findArray(value);
+          if (result) {
+            return result;
+          }
         }
       }
     }
