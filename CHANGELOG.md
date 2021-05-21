@@ -1,3 +1,8 @@
+## 0.2.0 (2021-05-21)
+
+#### Features
+* new NotebookOutputRenderer Api is used
+
 ## 0.2.0 (2021-05-13)
 
 #### Fix

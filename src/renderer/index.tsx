@@ -1,45 +1,61 @@
+import { ActivationFunction, CellInfo } from 'vscode-notebook-renderer';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { h, render, Component } from 'preact';
 import type { Grid, GridOptions, ColDef, ValueFormatterParams, GetQuickFilterTextParams, ITooltipParams } from '@ag-grid-community/core';
 
 import '@ag-grid-community/core/dist/styles/ag-grid.min.css';
 import '@ag-grid-community/core/dist/styles/ag-theme-alpine.min.css';
-import './render.css';
-import type { NotebookRendererApi } from 'vscode-notebook-renderer';
+import './index.css';
 
+export const activate: ActivationFunction = () => ({
+  renderCell(_id, cell: CellInfo) {
+    let dataGridMetaData: DataGridMetaData = {
+      gridOptions: {}
+    };
+    if (isDataGridOptions(cell.metadata)) {
+      dataGridMetaData = cell.metadata;
+    }
+    let data: string| undefined;
+    if (cell.value instanceof Uint8Array) {
+      data = new TextDecoder('utf-8').decode(cell.value);
+    } else if (typeof cell.value === 'string') {
+      data = cell.value;
+    }
+    if (data) {
+      render(<DataGrid data={JSON.parse(data)} metaData={dataGridMetaData} />, cell.element);
+    }
+  },
+});
 
-interface IRenderInfo {
-  container: HTMLElement;
-  mimeType: string;
-  gridOptions: GridOptions;
-  metaData?: DataGridMetaData,
-  notebookApi: NotebookRendererApi<unknown>;
+function isDataGridOptions(metadata: unknown): metadata is DataGridMetaData {
+  const obj = metadata as Record<string, number>;
+  return !!obj && !!obj.gridOptions;
 }
 
-export function renderCell({ container, mimeType, gridOptions, metaData }: IRenderInfo): void {
-  if (mimeType === 'x-application/httpbook-grid') {
-    render(<DataGrid gridOptions={gridOptions} metaData={metaData}/>, container);
-  }
-}
 
 interface DataGridMetaData {
+  field?: string;
+  gridOptions: GridOptions,
   numberOfRowsForColDefRecognition?: number,
   columnDefs?: string,
 }
 
-export class DataGrid extends Component<{ gridOptions: GridOptions, metaData?: DataGridMetaData }, { grid: Grid }> {
+
+export class DataGrid extends Component<{ data: unknown, metaData: DataGridMetaData }, { grid: Grid }> {
   private ref: HTMLElement | null = null;
   async componentDidMount(): Promise<void> {
-    if (this.ref) {
+    if (this.ref && Array.isArray(this.props.data)) {
       const gridOptions: GridOptions = {
-        columnDefs: this.getColumnDefs(this.props.gridOptions.rowData, this.props.metaData),
+        rowData: this.props.data,
+        columnDefs: this.getColumnDefs(this.props.data, this.props.metaData),
       };
       const { Grid } = await import(/* webpackChunkName: "aggrid" */ '@ag-grid-community/core');
       const { ClientSideRowModelModule } = await import(/* webpackChunkName: "aggrid" */ '@ag-grid-community/client-side-row-model');
-      const grid = new Grid(this.ref, Object.assign(this.props.gridOptions, gridOptions), { modules: [ClientSideRowModelModule] });
+      const grid = new Grid(this.ref, Object.assign(this.props.metaData.gridOptions, gridOptions), { modules: [ClientSideRowModelModule] });
       this.setState({
         grid,
       });
+
     }
   }
 
@@ -50,8 +66,8 @@ export class DataGrid extends Component<{ gridOptions: GridOptions, metaData?: D
   onInput({ target, preventDefault }: {target: EventTarget | null, preventDefault: () => void}): void {
     if (target && target instanceof HTMLInputElement) {
       const { value } = target;
-      if (this.props.gridOptions.api) {
-        this.props.gridOptions.api.setQuickFilter(value);
+      if (this.props.metaData.gridOptions.api) {
+        this.props.metaData.gridOptions.api.setQuickFilter(value);
       }
     }
     preventDefault();

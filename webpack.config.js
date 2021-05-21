@@ -19,6 +19,9 @@ module.exports = [(env, argv) => {
         type: 'commonjs2',
       },
     },
+    experiments: {
+      outputModule: true,
+    },
     devtool: argv.mode === 'development' ? 'eval-cheap-module-source-map' : 'nosources-source-map',
     externals: {
       vscode: 'commonjs vscode'
@@ -68,10 +71,10 @@ module.exports = [(env, argv) => {
   const config = {
     mode: argv.mode,
     devtool: argv.mode === 'development' ? 'eval-cheap-module-source-map' : false,
-    entry: './src/client/index.ts',
+    entry: './src/renderer/index.tsx',
     output: {
       path: path.join(__dirname, 'dist'),
-      filename: "client.js",
+      filename: "gridRenderer.js",
       publicPath: '',
       chunkFilename: 'aggrid.js'
     },
@@ -90,7 +93,7 @@ module.exports = [(env, argv) => {
               loader: 'ts-loader',
               options: {
                 happyPackMode: true,
-                configFile: 'src/client/tsconfig.json',
+                configFile: 'src/renderer/tsconfig.json',
                 transpileOnly: true,
                 compilerOptions: {
                   noEmit: false,
@@ -136,21 +139,15 @@ module.exports = [(env, argv) => {
       new ForkTsCheckerWebpackPlugin({
         async: true,
         typescript: {
-          tsconfig: 'src/client/tsconfig.json',
+          tsconfig: 'src/renderer/tsconfig.json',
           diagnosticOptions: {
             semantic: true,
             syntactic: true,
           },
         },
         eslint: {
-          files: ['./src/client/**/*.{ts,tsx,js,jsx}']
+          files: ['./src/renderer/**/*.{ts,tsx,js,jsx}']
         }
-      }),
-      new DefinePlugin({
-        // Path from the output filename to the output directory
-        __webpack_relative_entrypoint_to_root__: JSON.stringify(
-          path.posix.relative(path.posix.dirname(`/client.js`), '/'),
-        ),
       }),
     ],
     optimization: {

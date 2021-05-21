@@ -15,7 +15,7 @@ export class GridHttpOutpoutProvider implements HttpOutputProvider {
 
       let rowData: Array<unknown> | false = false;
       let priority = HttpOutputPriority.Default;
-      const explicitField = metaData['grid.arrayField'];
+      const explicitField = metaData['grid.field'];
       if (explicitField) {
         const fieldValue = get(response.parsedBody, explicitField);
         if (Array.isArray(fieldValue)) {
@@ -29,14 +29,13 @@ export class GridHttpOutpoutProvider implements HttpOutputProvider {
         rowData = this.findArray(response.parsedBody);
       }
       if (rowData) {
-        const gridOptions: GridOptions = Object.assign({}, this.config.gridOptions, {
-          rowData
-        });
+        const gridOptions: GridOptions = Object.assign({}, this.config.gridOptions);
         return {
           outputItems: new vscode.NotebookCellOutputItem(
             'x-application/httpbook-grid',
-            gridOptions,
+            JSON.stringify(rowData),
             {
+              gridOptions,
               numberOfRowsForColDefRecognition: +metaData['grid.rowsForColumnDefs'] || this.config.numberOfRowsForColDefRecognition,
               columnDefs: metaData['grid.columnDefs'],
             }
