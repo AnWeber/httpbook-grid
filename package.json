@@ -2,7 +2,7 @@
   "name": "httpbook-grid",
   "displayName": "httpBook - Grid Renderer",
   "description": "httpbook extension to view data in grid",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "publisher": "anweber",
   "homepage": "https://github.com/AnWeber/httpbook-grid",
   "repository": {
@@ -42,7 +42,6 @@
         "entrypoint": "./dist/gridRenderer.js",
         "displayName": "httpbook-grid",
         "mimeTypes": [
-          "application/json",
           "x-application/httpbook-grid"
         ]
       }

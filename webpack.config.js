@@ -19,9 +19,6 @@ module.exports = [(env, argv) => {
         type: 'commonjs2',
       },
     },
-    experiments: {
-      outputModule: true,
-    },
     devtool: argv.mode === 'development' ? 'eval-cheap-module-source-map' : 'nosources-source-map',
     externals: {
       vscode: 'commonjs vscode'
@@ -71,12 +68,17 @@ module.exports = [(env, argv) => {
   const config = {
     mode: argv.mode,
     devtool: argv.mode === 'development' ? 'eval-cheap-module-source-map' : false,
-    entry: './src/renderer/index.tsx',
+    entry: {
+      gridRenderer: './src/renderer/index.tsx',
+    },
     output: {
       path: path.join(__dirname, 'dist'),
-      filename: "gridRenderer.js",
+      filename: "[name].js",
       publicPath: '',
-      chunkFilename: 'aggrid.js'
+      libraryTarget: 'module',
+    },
+    experiments: {
+      outputModule: true,
     },
     resolve: {
       extensions: ['.ts', '.tsx', '.js', '.jsx', '.css'],

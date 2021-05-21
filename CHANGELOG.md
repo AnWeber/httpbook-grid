@@ -1,4 +1,9 @@
-## 0.2.0 (2021-05-21)
+## 0.4.0 (2021-05-21)
+
+#### Fix
+* removed application/json mimetype
+
+## 0.3.0 (2021-05-21)
 
 #### Features
 * new NotebookOutputRenderer Api is used

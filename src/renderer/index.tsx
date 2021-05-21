@@ -1,10 +1,11 @@
 import { ActivationFunction, CellInfo } from 'vscode-notebook-renderer';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { h, render, Component } from 'preact';
-import type { Grid, GridOptions, ColDef, ValueFormatterParams, GetQuickFilterTextParams, ITooltipParams } from '@ag-grid-community/core';
 
 import '@ag-grid-community/core/dist/styles/ag-grid.min.css';
 import '@ag-grid-community/core/dist/styles/ag-theme-alpine.min.css';
+import { Grid, GridOptions, ColDef, ValueFormatterParams, GetQuickFilterTextParams, ITooltipParams } from '@ag-grid-community/core';
+import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
 import './index.css';
 
 export const activate: ActivationFunction = () => ({
@@ -49,8 +50,7 @@ export class DataGrid extends Component<{ data: unknown, metaData: DataGridMetaD
         rowData: this.props.data,
         columnDefs: this.getColumnDefs(this.props.data, this.props.metaData),
       };
-      const { Grid } = await import(/* webpackChunkName: "aggrid" */ '@ag-grid-community/core');
-      const { ClientSideRowModelModule } = await import(/* webpackChunkName: "aggrid" */ '@ag-grid-community/client-side-row-model');
+
       const grid = new Grid(this.ref, Object.assign(this.props.metaData.gridOptions, gridOptions), { modules: [ClientSideRowModelModule] });
       this.setState({
         grid,
