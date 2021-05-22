@@ -80,16 +80,10 @@ declare module 'vscode' {
 		constructor(host: string, port: number, connectionToken?: string);
 	}
 
-	export enum RemoteTrustOption {
-		Unknown = 0,
-		DisableTrust = 1,
-		MachineTrusted = 2
-	}
-
 	export interface ResolvedOptions {
 		extensionHostEnv?: { [key: string]: string | null; };
 
-		trust?: RemoteTrustOption;
+		isTrusted?: boolean;
 	}
 
 	export interface TunnelOptions {
@@ -150,7 +144,24 @@ declare module 'vscode' {
 	}
 
 	export interface RemoteAuthorityResolver {
+		/**
+		 * Resolve the authority part of the current opened `vscode-remote://` URI.
+		 *
+		 * This method will be invoked once during the startup of VS Code and again each time
+		 * VS Code detects a disconnection.
+		 *
+		 * @param authority The authority part of the current opened `vscode-remote://` URI.
+		 * @param context A context indicating if this is the first call or a subsequent call.
+		 */
 		resolve(authority: string, context: RemoteAuthorityResolverContext): ResolverResult | Thenable<ResolverResult>;
+
+		/**
+		 * Get the canonical URI (if applicable) for a `vscode-remote://` URI.
+		 *
+		 * @returns The canonical URI or undefined if the uri is already canonical.
+		 */
+		getCanonicalURI?(uri: Uri): ProviderResult<Uri>;
+
 		/**
 		 * Can be optionally implemented if the extension can forward ports better than the core.
 		 * When not implemented, the core will use its default forwarding logic.
@@ -1227,34 +1238,97 @@ declare module 'vscode' {
 		with(change: { start?: number, end?: number }): NotebookRange;
 	}
 
-	// code specific mime types
-	// application/x.notebook.error-traceback
-	// application/x.notebook.stdout
-	// application/x.notebook.stderr
-	// application/x.notebook.stream
+	// todo@API document which mime types are supported out of the box and
+	// which are considered secure
 	export class NotebookCellOutputItem {
 
-		// todo@API
-		// add factory functions for common mime types
-		// static textplain(value:string): NotebookCellOutputItem;
-		// static errortrace(value:any): NotebookCellOutputItem;
+		/**
+		 * Factory function to create a `NotebookCellOutputItem` from a string.
+		 *
+		 * *Note* that an UTF-8 encoder is used to create bytes for the string.
+		 *
+		 * @param value A string/
+		 * @param mime Optional MIME type, defaults to `text/plain`.
+		 * @returns A new output item object.
+		 */
+		static text(value: string, mime?: string): NotebookCellOutputItem;
 
 		/**
-		 * Creates `application/x.notebook.error`
+		 * Factory function to create a `NotebookCellOutputItem` from
+		 * a JSON object.
 		 *
-		 * @param err An error for which an output item is wanted
+		 * *Note* that this function is not expecting "stringified JSON" but
+		 * an object that can be stringified. This function will throw an error
+		 * when the passed value cannot be JSON-stringified.
+		 *
+		 * @param value A JSON-stringifyable value.
+		 * @param mime Optional MIME type, defaults to `application/json`
+		 * @returns A new output item object.
 		 */
-		static error(err: Error): NotebookCellOutputItem;
+		static json(value: any, mime?: string): NotebookCellOutputItem;
 
+		/**
+		 * Factory function to create a `NotebookCellOutputItem` from bytes.
+		 *
+		 * @param value An array of unsigned 8-bit integers.
+		 * @param mime Optional MIME type, defaults to `application/octet-stream`.
+		 * @returns A new output item object.
+		 */
+		//todo@API better names: bytes, raw, buffer?
+		static bytes(value: Uint8Array, mime?: string): NotebookCellOutputItem;
+
+		/**
+		 * Factory function to create a `NotebookCellOutputItem` that uses
+		 * uses the `application/vnd.code.notebook.stdout` mime type.
+		 *
+		 * @param value A string.
+		 * @returns A new output item object.
+		 */
+		static stdout(value: string): NotebookCellOutputItem;
+
+		/**
+		 * Factory function to create a `NotebookCellOutputItem` that uses
+		 * uses the `application/vnd.code.notebook.stderr` mime type.
+		 *
+		 * @param value A string.
+		 * @returns A new output item object.
+		 */
+		static stderr(value: string): NotebookCellOutputItem;
+
+		/**
+		 * Factory function to create a `NotebookCellOutputItem` that uses
+		 * uses the `application/vnd.code.notebook.error` mime type.
+		 *
+		 * @param value An error object.
+		 * @returns A new output item object.
+		 */
+		static error(value: Error): NotebookCellOutputItem;
+
+		/**
+		 * The mime type which determines how the {@link NotebookCellOutputItem.value `value`}-property
+		 * is interpreted.
+		 *
+		 * Notebooks have built-in support for certain mime-types, extensions can add support for new
+		 * types and override existing types.
+		 */
 		mime: string;
 
-		//todo@API string or Unit8Array?
-		// value: string | Uint8Array | unknown;
-		value: unknown;
+		/**
+		 * The value of this output item. Must always be an array of unsigned 8-bit integers.
+		 */
+		//todo@API only Unit8Array
+		value: Uint8Array | unknown;
 
 		metadata?: { [key: string]: any };
 
-		constructor(mime: string, value: unknown, metadata?: { [key: string]: any });
+		/**
+		 * Create a new notbook cell output item.
+		 *
+		 * @param mime The mime type of the output item.
+		 * @param value The value of the output item.
+		 * @param metadata Optional metadata for this output item.
+		 */
+		constructor(mime: string, value: Uint8Array | unknown, metadata?: { [key: string]: any });
 	}
 
 	// @jrieken transient
@@ -3357,6 +3431,64 @@ declare module 'vscode' {
 		 * Sets focus to the input.
 		 */
 		focus(): void;
+	}
+
+	//#endregion
+
+	//#region https://github.com/microsoft/vscode/issues/124024 @hediet @alexdima
+
+	export class InlineCompletionItem {
+		/**
+		 * The text to insert.
+		 * If the text contains a line break, the range must end at the end of a line.
+		 * If existing text should be replaced, the existing text must be a prefix of the text to insert.
+		*/
+		text: string;
+
+		/**
+		 * The range to replace.
+		 * Must begin and end on the same line.
+		*/
+		range?: Range;
+
+		constructor(text: string);
+	}
+
+	export class InlineCompletionList {
+		items: InlineCompletionItem[];
+
+		constructor(items: InlineCompletionItem[]);
+	}
+
+	/**
+	 * How an {@link InlineCompletionItemProvider inline completion provider} was triggered.
+	 */
+	export enum InlineCompletionTriggerKind {
+		/**
+		 * Completion was triggered automatically while editing.
+		 * It is sufficient to return a single completion item in this case.
+		 */
+		Automatic = 0,
+
+		/**
+		 * Completion was triggered explicitly by a user gesture.
+		 * Return multiple completion items to enable cycling through them.
+		 */
+		Explicit = 1,
+	}
+	export interface InlineCompletionContext {
+		/**
+		 * How the completion was triggered.
+		 */
+		readonly triggerKind: InlineCompletionTriggerKind;
+	}
+
+	export interface InlineCompletionItemProvider {
+		provideInlineCompletionItems(document: TextDocument, position: Position, context: InlineCompletionContext, token: CancellationToken): ProviderResult<InlineCompletionList>;
+	}
+
+	export namespace languages {
+		export function registerInlineCompletionItemProvider(selector: DocumentSelector, provider: InlineCompletionItemProvider): Disposable;
 	}
 
 	//#endregion
