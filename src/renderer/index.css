@@ -1,6 +1,6 @@
 .ag-theme-alpine{
-  font-family: var(--vscode-editor-font-family);
-  color: var(--vscode-editor-foreground);
+  font-family: var(--theme-code-font-family);
+  color: var(--theme-foreground);
   height: 30rem;
   overflow: auto;
 }
@@ -30,19 +30,28 @@
   outline-color: var(--theme-input-focus-border-color);
 }
 
-:root{
---ag-foreground-color: var(--vscode-tab-activeForeground);
---ag-background-color: var(--vscode-tab-activeBackground);
-
---ag-header-background-color: var(--vscode-tab-inactiveBackground);
---ag-header-foreground-color: var(--vscode-tab-inactiveForeground);
---ag-header-column-resize-handle-color: var(--vscode-tab-border);
-
-
---ag-row-background-color : var(--vscode-tab-activeBackground);
---ag-data-color : var(--vscode-tab-activeForeground);
---ag-odd-row-background-color: var(--vscode-tab-inactiveBackground);
---ag-odd-row-foreground-color: var(--vscode-tab-inactiveForeground);
---ag-selected-row-background-color: var(--vscode-tab-activeModifiedBorder);
---ag-row-border-color: var(---vscode-tab-border);
+.ag-theme-alpine .ag-row-odd{
+  filter: brightness(.96);
 }
+
+.vscode-dark .ag-theme-alpine .ag-row-odd{
+  filter: brightness(1.2);
+}
+
+:root{
+  --ag-foreground-color: var(--theme-foreground);
+  --ag-background-color: var(--theme-background);
+
+  --ag-header-background-color: var(--theme-notebook-cell-selected-background);
+  --ag-header-foreground-color: var(--theme-foreground);
+  --ag-header-column-resize-handle-color: var(--theme-input-border-color);
+
+
+  --ag-row-background-color : var(--theme-background);
+  --ag-data-color : var(--theme-foreground);
+  --ag-odd-row-background-color: var(--theme-background);
+  --ag-odd-row-foreground-color: var(--theme-foreground);
+  --ag-selected-row-background-color: var(--theme-link-active);
+  --ag-row-border-color: var(--theme-input-border-color);
+
+  }

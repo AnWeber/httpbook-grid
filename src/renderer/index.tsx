@@ -16,15 +16,7 @@ export const activate: ActivationFunction = () => ({
     if (isDataGridOptions(cell.metadata)) {
       dataGridMetaData = cell.metadata;
     }
-    let data: string| undefined;
-    if (cell.value instanceof Uint8Array) {
-      data = new TextDecoder('utf-8').decode(cell.value);
-    } else if (typeof cell.value === 'string') {
-      data = cell.value;
-    }
-    if (data) {
-      render(<DataGrid data={JSON.parse(data)} metaData={dataGridMetaData} />, cell.element);
-    }
+    render(<DataGrid data={cell.json()} metaData={dataGridMetaData} />, cell.element);
   },
 });
 

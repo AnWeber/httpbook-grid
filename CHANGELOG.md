@@ -1,3 +1,9 @@
+## 0.5.0 (2021-05-21)
+
+#### Fix
+* change to new renderer api
+* remove use of --vscode css variablen
+
 ## 0.4.0 (2021-05-21)
 
 #### Fix
