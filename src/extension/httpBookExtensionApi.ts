@@ -1,11 +1,6 @@
-import { NotebookCell, NotebookCellOutputItem, NotebookEditor } from 'vscode';
+import { NotebookCellOutputItem } from 'vscode';
 import type { HttpResponse, TestResult } from 'httpyac';
 export interface HttpOutputContext{
-
-  /**
-   * current Notebookcell
-   */
-  cell: NotebookCell;
 
   mimeType?: string;
 
@@ -52,12 +47,6 @@ export interface HttpOutputProvider{
    * unique id (only for logging)
    */
   readonly id: string;
-
-  /**
-   * onDidReceiveMessage of any NotebookCellOutputItem
-   * @param event onDidReceiveMessage Event
-   */
-  onDidReceiveMessage?(event: { editor: NotebookEditor, message: unknown }): void;
 
   /**
    * create NotebookCellOutputItems with view priority for response

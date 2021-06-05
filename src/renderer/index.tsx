@@ -1,4 +1,4 @@
-import { ActivationFunction, CellInfo } from 'vscode-notebook-renderer';
+import { ActivationFunction, OutputItem } from 'vscode-notebook-renderer';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { h, render, Component } from 'preact';
 
@@ -9,24 +9,14 @@ import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-mod
 import './index.css';
 
 export const activate: ActivationFunction = () => ({
-  renderCell(_id, cell: CellInfo) {
-    let dataGridMetaData: DataGridMetaData = {
-      gridOptions: {}
-    };
-    if (isDataGridOptions(cell.metadata)) {
-      dataGridMetaData = cell.metadata;
-    }
-    render(<DataGrid data={cell.json()} metaData={dataGridMetaData} />, cell.element);
+  renderOutputItem(outputItem: OutputItem, element: HTMLElement) {
+    render(<DataGrid outputItem={outputItem.json()} />, element);
   },
 });
 
-function isDataGridOptions(metadata: unknown): metadata is DataGridMetaData {
-  const obj = metadata as Record<string, number>;
-  return !!obj && !!obj.gridOptions;
-}
 
-
-interface DataGridMetaData {
+interface DataGridOutputItem {
+  rowData: unknown[],
   field?: string;
   gridOptions: GridOptions,
   numberOfRowsForColDefRecognition?: number,
@@ -34,16 +24,16 @@ interface DataGridMetaData {
 }
 
 
-export class DataGrid extends Component<{ data: unknown, metaData: DataGridMetaData }, { grid: Grid }> {
+export class DataGrid extends Component<{ outputItem: DataGridOutputItem }, { grid: Grid }> {
   private ref: HTMLElement | null = null;
   async componentDidMount(): Promise<void> {
-    if (this.ref && Array.isArray(this.props.data)) {
+    if (this.ref && Array.isArray(this.props.outputItem.rowData)) {
       const gridOptions: GridOptions = {
-        rowData: this.props.data,
-        columnDefs: this.getColumnDefs(this.props.data, this.props.metaData),
+        rowData: this.props.outputItem.rowData,
+        columnDefs: this.getColumnDefs(this.props.outputItem.rowData, this.props.outputItem),
       };
 
-      const grid = new Grid(this.ref, Object.assign(this.props.metaData.gridOptions, gridOptions), { modules: [ClientSideRowModelModule] });
+      const grid = new Grid(this.ref, Object.assign(this.props.outputItem.gridOptions, gridOptions), { modules: [ClientSideRowModelModule] });
       this.setState({
         grid,
       });
@@ -58,8 +48,8 @@ export class DataGrid extends Component<{ data: unknown, metaData: DataGridMetaD
   onInput({ target, preventDefault }: {target: EventTarget | null, preventDefault: () => void}): void {
     if (target && target instanceof HTMLInputElement) {
       const { value } = target;
-      if (this.props.metaData.gridOptions.api) {
-        this.props.metaData.gridOptions.api.setQuickFilter(value);
+      if (this.props.outputItem.gridOptions.api) {
+        this.props.outputItem.gridOptions.api.setQuickFilter(value);
       }
     }
     preventDefault();
@@ -80,9 +70,9 @@ export class DataGrid extends Component<{ data: unknown, metaData: DataGridMetaD
     );
   }
 
-  private getColumnDefs(rowData: Array<unknown> | undefined, metaData?: DataGridMetaData): ColDef[] {
-    if (metaData?.columnDefs) {
-      return metaData.columnDefs.split(',').map(obj => {
+  private getColumnDefs(rowData: Array<unknown> | undefined, outputItem?: DataGridOutputItem): ColDef[] {
+    if (outputItem?.columnDefs) {
+      return outputItem.columnDefs.split(',').map(obj => {
         const col = obj.split('=');
         if (col.length > 1) {
           return {
@@ -98,7 +88,7 @@ export class DataGrid extends Component<{ data: unknown, metaData: DataGridMetaD
     }
     const result: ColDef[] = [];
 
-    const maxRows = metaData?.numberOfRowsForColDefRecognition || result.length;
+    const maxRows = outputItem?.numberOfRowsForColDefRecognition || result.length;
     let index = 0;
     if (rowData) {
       for (const row of rowData) {

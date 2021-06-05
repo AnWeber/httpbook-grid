@@ -31,11 +31,12 @@ export class GridHttpOutpoutProvider implements HttpOutputProvider {
       if (rowData) {
         const gridOptions: GridOptions = Object.assign({}, this.config.gridOptions);
         return {
-          outputItems: vscode.NotebookCellOutputItem.json(rowData, 'x-application/httpbook-grid', {
+          outputItems: vscode.NotebookCellOutputItem.json({
+            rowData,
             gridOptions,
             numberOfRowsForColDefRecognition: +metaData['grid.rowsForColumnDefs'] || this.config.numberOfRowsForColDefRecognition,
             columnDefs: metaData['grid.columnDefs'],
-          }),
+          }, 'x-application/httpbook-grid'),
           priority
         };
       }
