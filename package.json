@@ -2,7 +2,7 @@
   "name": "httpbook-grid",
   "displayName": "httpBook - Grid Renderer",
   "description": "httpbook extension to view data in grid",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "publisher": "anweber",
   "homepage": "https://github.com/AnWeber/httpbook-grid",
   "repository": {
@@ -14,7 +14,7 @@
   },
   "qna": "https://github.com/AnWeber/httpbook-grid/discussions",
   "engines": {
-    "vscode": "^1.56.0"
+    "vscode": "^1.57.0"
   },
   "categories": [
     "Notebooks"
@@ -94,18 +94,18 @@
   },
   "devDependencies": {
     "@types/lodash": "^4.14.170",
-    "@types/node": "^15.12.1",
-    "@types/react": "^17.0.9",
-    "@types/vscode": "^1.56.0",
+    "@types/node": "^15.12.2",
+    "@types/react": "^17.0.11",
+    "@types/vscode": "^1.57.0",
     "@types/vscode-notebook-renderer": "^1.57.9",
     "@types/webpack-env": "^1.16.0",
-    "@typescript-eslint/eslint-plugin": "^4.26.0",
-    "@typescript-eslint/parser": "^4.26.0",
+    "@typescript-eslint/eslint-plugin": "^4.26.1",
+    "@typescript-eslint/parser": "^4.26.1",
     "css-loader": "^5.2.6",
     "eslint": "^7.28.0",
     "eslint-plugin-node": "^11.1.0",
     "fork-ts-checker-webpack-plugin": "^6.2.10",
-		"httpyac": "^2.14.0",
+		"httpyac": "^2.14.1",
     "husky": "^6.0.0",
     "lint-staged": "^11.0.0",
     "lockfile-lint": "^4.6.2",
@@ -117,7 +117,7 @@
     "url-loader": "^4.1.1",
     "vscode-dts": "^0.3.1",
     "webpack": "^5.38.1",
-    "webpack-cli": "^4.7.0"
+    "webpack-cli": "^4.7.2"
   },
   "dependencies": {
     "@ag-grid-community/client-side-row-model": "^25.3.0",

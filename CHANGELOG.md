@@ -1,7 +1,13 @@
+## 0.7.0 (2021-06-12)
+
+#### Fix
+* update normalize-url
+
 ## 0.6.0 (2021-06-05)
 
 #### features
 * update to new notebook api
+
 ## 0.5.0 (2021-05-21)
 
 #### Fix
