@@ -111,7 +111,7 @@ export class DataGrid extends Component<{ outputItem: DataGridOutputItem }, { gr
 
   private getColDefs(obj: unknown): ColDef[] {
     const result: ColDef[] = [];
-    if (typeof obj === 'object') {
+    if (obj && typeof obj === 'object') {
       for (const [field, value] of Object.entries(obj as Record<string, unknown>)) {
         if (Array.isArray(value)) {
           result.push({
