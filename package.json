@@ -119,7 +119,7 @@
   },
   "dependencies": {
     "@ag-grid-community/client-side-row-model": "^26.0.0",
-    "@ag-grid-community/core": "^26.0.0",
+    "@ag-grid-community/core": "^26.1.0",
     "lodash": "^4.17.21",
     "preact": "^10.5.14",
     "vscode-notebook-error-overlay": "^1.0.1"
