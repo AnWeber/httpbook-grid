@@ -118,7 +118,7 @@
     "webpack-cli": "^4.8.0"
   },
   "dependencies": {
-    "@ag-grid-community/client-side-row-model": "^26.2.0",
+    "@ag-grid-community/client-side-row-model": "^27.0.0",
     "@ag-grid-community/core": "^26.2.1",
     "lodash": "^4.17.21",
     "preact": "^10.6.5",
