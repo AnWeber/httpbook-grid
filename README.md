@@ -17,7 +17,6 @@ GET https://httpbin.org/json
 # @grid.arrayField slideshow.slides
 ```
 
-
 ## License
 [MIT License](LICENSE)
 
