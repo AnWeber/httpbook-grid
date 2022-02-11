@@ -52,9 +52,6 @@ module.exports = [(env, argv) => {
             semantic: true,
             syntactic: true,
           },
-        },
-        eslint: {
-          files: ['./src/extension/**/*.{ts,tsx,js,jsx}']
         }
       })
     ],
@@ -143,9 +140,6 @@ module.exports = [(env, argv) => {
             syntactic: true,
           },
         },
-        eslint: {
-          files: ['./src/renderer/**/*.{ts,tsx,js,jsx}']
-        }
       }),
     ],
     optimization: {
