@@ -121,7 +121,7 @@
     "@ag-grid-community/client-side-row-model": "^27.1.0",
     "@ag-grid-community/core": "^27.1.0",
     "lodash": "^4.17.21",
-    "preact": "^10.7.1",
+    "preact": "^10.7.2",
     "vscode-notebook-error-overlay": "^1.0.1"
   }
 }
