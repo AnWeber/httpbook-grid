@@ -1,5 +1,4 @@
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
-const { DefinePlugin } = require('webpack');
 const path = require('path');
 
 const devServerPort = 8111;
